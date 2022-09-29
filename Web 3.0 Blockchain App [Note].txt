@@ -1,0 +1,273 @@
+- Learn at https://www.youtube.com/watch?v=Wn_Kb3MR_cU
+	Time Stamps 👇
+	00:00:00 Intro
+	00:17:04 Setup
+	00:23:11 Navbar
+	00:39:08 Welcome Section
+	01:03:48 Blockchain
+	02:10:51 Services Section
+	02:21:53 Transactions
+	03:07:20 Deployment
+
+- Mua host+domain ở: hostinger.com
+	
+--------------------------------------------------------------------------
+* Setup
+	- Tạo 2 folder ở thư mục gốc:
+		'client'
+		'smart_contract'
+			
+	- Tải NodeJS
+		- Tải bản 'Recommended For Most Users' mới nhất tại 'https://nodejs.org/en/'
+	
+	- Truy cập 'https://vitejs.dev/'
+		> Công cụ giao diện người dùng thế hệ tiếp theo. Hãy sẵn sàng cho một môi trường phát triển cuối cùng có thể bắt kịp bạn.
+		> Vite là mã nguồn mở miễn phí, được tạo ra bởi các nhà tài trợ tuyệt vời
+		> Vite (từ tiếng Pháp có nghĩa là "nhanh chóng", phát âm là/vit/, như "veet") là một công cụ xây dựng nhằm mục đích cung cấp trải nghiệm phát triển nhanh hơn và gọn gàng hơn cho các dự án web hiện đại
+		
+		- Get Started > 'https://vitejs.dev/guide/' > copy 'npm create vite@latest'
+	
+	- cd \client
+	
+	>>> npm create vite@latest
+		- Ok to proceed? (y): y
+		- Project name: ./
+		- Select a framework: React
+		- Select a variant: JavaScript
+			> Done. Now run:
+			  npm install
+			  npm run dev
+				  
+	>>> npm install
+
+	>>> npm run dev
+		> VITE v3.1.3  ready in 514 ms
+		  ➜  Local:   http://localhost:5173/
+		  ➜  Network: use --host to expose
+		  
+	- Truy cập 'http://localhost:5173/'
+	
+	- Truy cập 'https://tailwindcss.com/docs/installation/using-postcss'
+		> Tailwind giúp xây dựng giao diện website một cách nhanh chóng thông qua các thuộc tính Css đã được viết thành những Class riêng, và việc của chúng ta là gọi các Class đó ra để sử dụng. Điều này sẽ giúp các bạn kiểm soát được lượng code css cũng như dễ dàng loại bỏ những gì không dùng đến
+		
+		>>> npm install -D tailwindcss postcss autoprefixer
+		>>> npx tailwindcss init -p
+			> trên site thì tailwindcss v3.1.8 cung cấp cli 'npx tailwindcss init', không phải như trong video là 'npx tailwindcss init -p' 
+			> ta vẫn dùng 'npx tailwindcss init -p' như trong video thì nó mới tạo được file 'client\postcss.config.cjs'
+		
+		- Update 'client\tailwind.config.cjs'
+			- Thay nội dung file bằng code này (Copy content ở đây 'https://tailwindcss.com/docs/installation/using-postcss')
+				/** @type {import('tailwindcss').Config} */
+				module.exports = {
+				  content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
+				  theme: {
+					extend: {},
+				  },
+				  plugins: [],
+				}
+			
+		- Update 'client\src\index.css'
+			- Thay nội dung file bằng code này (Copy content ở đây 'https://tailwindcss.com/docs/installation/using-postcss')
+				@tailwind base;
+				@tailwind components;
+				@tailwind utilities;
+				
+		- Update 'client\src\App.jsx'
+			const App = () => {
+
+			  return (
+				<div className="App">
+				  <h1 class="text-3xl font-bold underline">
+					Hello world!
+				  </h1>
+				</div>
+			  )
+			}
+
+			export default App
+			
+		- Chạy thử xem kết quả
+			>>> npm run dev
+			
+	
+	- cd ..
+	- cd .\smart_contract\
+	
+	>>> npm init -y
+		> Sẽ tạo ra file 'smart_contract\package.json'
+	
+--------------------------------------------------------------------------
+* Tạo Navbar
+	- Tạo file 'client\src\components\Navbar.jsx'
+		const Navbar = () => {
+			return (
+				<h1>Navbar</h1>
+			)
+		}
+
+		export default Navbar
+		
+	- Tạo file 'client\src\components\Footer.jsx'
+		const Footer = () => {
+			return (
+				<h1>Footer</h1>
+			)
+		}
+
+		export default Footer
+		
+	- Tạo 'client\src\components\Loader.jsx'
+		const Loader = () => {
+			return (
+				<h1>Loader</h1>
+			)
+		}
+
+		export default Loader
+		
+	- Tạo file 'client\src\components\Services.jsx'
+		const Services = () => {
+			return (
+				<h1>Services</h1>
+			)
+		}
+
+		export default Services
+		
+	- Tạo file 'client\src\components\Transactions.jsx'
+		const Transactions = () => {
+			return (
+				<h1>Transactions</h1>
+			)
+		}
+
+		export default Transactions
+		
+	- Tạo file 'client\src\components\Welcome.jsx'
+		const Welcome = () => {
+			return (
+				<h1>Welcome</h1>
+			)
+		}
+
+		export default Welcome
+		
+	- Tạo file 'client\src\components\index.js'
+		export {default as Loader} from './Loader'
+		export {default as Navbar} from './Navbar'
+		export {default as Footer} from './Footer'
+		export {default as Welcome} from './Welcome'
+		export {default as Transactions} from './Transactions'
+		export {default as Services} from './Services'
+		
+	- Update 'client\src\App.jsx'
+		import {Navbar, Welcome, Footer, Services, Transactions} from './components'
+
+		const App = () => {
+
+		  return (
+			<div className="min-h-screen">
+			  <div className="gradient-bg-welcome">
+				<Navbar/>
+				<Welcome/>
+			  </div>
+			  <Services/>
+			  <Transactions/>
+			  <Footer/>
+			</div>
+		  )
+		}
+
+		export default App
+		
+		> Ref 'https://tailwindcss.com/docs/min-height'
+			
+	- Chạy thử xem kết quả
+		>>> npm run dev
+		
+	- Tạo files
+		'client\images\logo.png'
+		'client\images\hello.svg'
+		'client\images\animated.svg'
+		
+	>>> npm i react-icons
+		> Bao gồm các biểu tượng phổ biến trong các dự án React của bạn một cách dễ dàng với các biểu tượng phản ứng, sử dụng nhập ES6 cho phép bạn chỉ bao gồm các biểu tượng mà dự án của bạn đang sử dụng. ref 'https://www.npmjs.com/package/react-icons'
+		
+	>> npm i ethers
+		> install trước, khả năng sẽ dùng cho eth crypto
+		
+	- Update 'client\src\components\Navbar.jsx'
+		import {useState} from 'react'
+		import {HiMenuAlt4} from 'react-icons/hi'
+		import {AiOutlineClose} from 'react-icons/ai'
+
+		import logo from '../../images/logo.png'
+
+		const NavbarItem = ({title, classProps}) => {
+			return (
+				<li className={`mx-4 cursor-pointer ${classProps}`}>
+					{title}
+				</li>
+			)
+		}
+
+		const Navbar = () => {
+			const [toggleMenu, setToggleMenu] = useState(false)
+
+			return (
+				<nav className='w-full flex md:justify-center justify-between items-center p-4'>
+					<div className='md:flex-[0.5] flex-initial justify-center items-center'>
+						<img src={logo} alt='logo' className='w-32 cursor-pointer' />
+					</div>
+					<ul className='text-white md:flex hidden list-row justify-between items-center flex-initial'>
+						{['Market', 'Exchange', 'Tutorials', 'Wallets'].map((item, index) => (
+							<NavbarItem key={item+index} title={item} />
+						))}
+						<li className='bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]'>
+							Login
+						</li>
+					</ul>
+					<div className='flex '>
+						{toggleMenu
+							? <AiOutlineClose fontSize={28} className='text-white md:hidden cursor-pointer' onClick={() => setToggleMenu(false)} />
+							: <HiMenuAlt4 fontSize={28} className='text-white md:hidden cursor-pointer' onClick={() => setToggleMenu(true)} />
+						}  
+						
+						{toggleMenu && (
+							<ul
+								className='z-10 fixed top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none
+									flex flex-col justify-start items-end rounded-md blue-glassmorphism
+									text-white animate-slide-in
+								'
+							>
+								<li className='text-xl w-full my-2'>
+									<AiOutlineClose onClick={() => setToggleMenu(false)} />
+								</li>
+								{['Market', 'Exchange', 'Tutorials', 'Wallets'].map((item, index) => (
+									<NavbarItem key={item+index} title={item}  classProps='my-2 text-lg'/>
+								))}
+							</ul>
+						)}
+					</div>
+				</nav>
+			)
+		}
+
+		export default Navbar
+		
+		
+		> Ref:
+			w-full: 'https://tailwindcss.com/docs/width#percentage-widths'
+			flex: 'https://tailwindcss.com/docs/flex'
+			justify-center justify-between: 'https://tailwindcss.com/docs/justify-content'
+			items-center: 'https://tailwindcss.com/docs/align-items#center'
+			Viewport Width (vw): Đơn vị này dựa trên chiều rộng của khung nhìn. Giá trị 1vw bằng 1% chiều rộng khung nhìn
+			h-screen: Chiều cao khung nhìn. Sử dụng màn hình h để tạo một phần tử kéo dài toàn bộ chiều cao của khung nhìn
+			rounded-md:	border-radius: 0.375rem; /* 6px */ 'https://tailwindcss.com/docs/border-radius'
+			blue-glassmorphism: Glassmorphism là một phong cách thiết kế, được đặt ra bởi Michal Malewicz từ Hype4.Academy để kết nối và kết hợp tất cả các công dụng của hiệu ứng 'kính mờ' trong giao diện người dùng ...
+			
+			> Flex css là một kiểu dàn trang mà khi sử dụng nó sẽ tự cân đối kích thước của các thành phần để hiển thị trong mọi thiết bị. Điều đó có nghĩa là bạn không cần ngồi căn chỉnh kích thước phần tử, không cần ngồi float chỉ cần thiết lập nó theo chiều ngang dọc là lúc đó các phần tử bên trong sẽ tự hiển thị theo mong muốn. Ref 'https://tenten.vn/tin-tuc/flex-css/#:~:text=Flex%20css%20l%C3%A0%20m%E1%BB%99t%20ki%E1%BB%83u,hi%E1%BB%83n%20th%E1%BB%8B%20theo%20mong%20mu%E1%BB%91n.'
+	
+--------------------------------------------------------------------------
+* Welcome Section
+	- 
