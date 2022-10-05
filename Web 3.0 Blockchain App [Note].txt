@@ -8,8 +8,12 @@
 	02:10:51 Services Section
 	02:21:53 Transactions
 	03:07:20 Deployment
+	
+- Hướng dẫn Tailwind CSS với React
+	'https://www.youtube.com/watch?v=mSR-g4CxkE8'
 
-- Mua host+domain ở: hostinger.com
+- Mua host+domain ở: 
+	'hostinger.com'
 	
 --------------------------------------------------------------------------
 * Setup
@@ -45,6 +49,15 @@
 		  ➜  Local:   http://localhost:5173/
 		  ➜  Network: use --host to expose
 		  
+	- Install những Extension cho VS Code
+		- PostCSS Intellisense and Highlighting
+			> Syntax highlighting and intellisense for PostCSS
+			> Highlight cho code css/taiwindcss
+		
+		- Tailwind CSS IntelliSensePreview
+			> Tailwind CSS IntelliSense nâng cao trải nghiệm phát triển Tailwind bằng cách cung cấp cho người dùng Visual Studio Code các tính năng nâng cao như tự động hoàn thành, tô sáng cú pháp và linting
+			> Tự động gợi ý class cho taiwindcss
+		  
 	- Truy cập 'http://localhost:5173/'
 	
 	- Truy cập 'https://tailwindcss.com/docs/installation/using-postcss'
@@ -56,10 +69,13 @@
 			> ta vẫn dùng 'npx tailwindcss init -p' như trong video thì nó mới tạo được file 'client\postcss.config.cjs'
 		
 		- Update 'client\tailwind.config.cjs'
-			- Thay nội dung file bằng code này (Copy content ở đây 'https://tailwindcss.com/docs/installation/using-postcss')
+			- Thay nội dung file bằng code này (Copy content ở đây 'https://tailwindcss.com/docs/installation/using-postcss' hoặc 'https://tailwindcss.com/docs/guides/vite')
 				/** @type {import('tailwindcss').Config} */
 				module.exports = {
-				  content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
+				  content: [
+					"./index.html",
+					"./src/**/*.{js,ts,jsx,tsx}",
+				  ],
 				  theme: {
 					extend: {},
 				  },
@@ -241,7 +257,7 @@
 								'
 							>
 								<li className='text-xl w-full my-2'>
-									<AiOutlineClose onClick={() => setToggleMenu(false)} />
+									<AiOutlineClose className='cursor-pointer' onClick={() => setToggleMenu(false)} />
 								</li>
 								{['Market', 'Exchange', 'Tutorials', 'Wallets'].map((item, index) => (
 									<NavbarItem key={item+index} title={item}  classProps='my-2 text-lg'/>
@@ -264,10 +280,26 @@
 			Viewport Width (vw): Đơn vị này dựa trên chiều rộng của khung nhìn. Giá trị 1vw bằng 1% chiều rộng khung nhìn
 			h-screen: Chiều cao khung nhìn. Sử dụng màn hình h để tạo một phần tử kéo dài toàn bộ chiều cao của khung nhìn
 			rounded-md:	border-radius: 0.375rem; /* 6px */ 'https://tailwindcss.com/docs/border-radius'
-			blue-glassmorphism: Glassmorphism là một phong cách thiết kế, được đặt ra bởi Michal Malewicz từ Hype4.Academy để kết nối và kết hợp tất cả các công dụng của hiệu ứng 'kính mờ' trong giao diện người dùng ...
+			blue-glassmorphism: Glassmorphism là một phong cách thiết kế, được đặt ra bởi Michal Malewicz từ Hype4.Academy để kết nối và kết hợp tất cả các công dụng của hiệu ứng 'kính mờ' trong giao 	diện người dùng ...
+			flex-1: Sử dụng flex-1 để cho phép một mục flex phát triển và thu nhỏ khi cần thiết, bỏ qua kích thước ban đầu của nó:
 			
 			> Flex css là một kiểu dàn trang mà khi sử dụng nó sẽ tự cân đối kích thước của các thành phần để hiển thị trong mọi thiết bị. Điều đó có nghĩa là bạn không cần ngồi căn chỉnh kích thước phần tử, không cần ngồi float chỉ cần thiết lập nó theo chiều ngang dọc là lúc đó các phần tử bên trong sẽ tự hiển thị theo mong muốn. Ref 'https://tenten.vn/tin-tuc/flex-css/#:~:text=Flex%20css%20l%C3%A0%20m%E1%BB%99t%20ki%E1%BB%83u,hi%E1%BB%83n%20th%E1%BB%8B%20theo%20mong%20mu%E1%BB%91n.'
 	
 --------------------------------------------------------------------------
 * Welcome Section
-	- 
+	- Update 'client\src\components\Loader.jsx'
+		const Loader = () => {
+			return (
+				<div className="flex justify-center items-center py-3">
+					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-700" />
+				</div>
+			)
+		}
+
+		export default Loader
+		
+	- Update 'client\src\components\Welcome.jsx'
+		...
+		
+	- Update 'client\tailwind.config.cjs'
+		...
