@@ -299,7 +299,298 @@
 		export default Loader
 		
 	- Update 'client\src\components\Welcome.jsx'
-		...
+		import {AiFillPlayCircle} from 'react-icons/ai'
+		import {SiEthereum} from 'react-icons/si'
+		import {BsInfoCircle} from 'react-icons/bs'
+
+		import {Loader} from './'
+
+		const commonStyles = 'min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-white'
+
+
+		const Input = ({placeholder, name, type, value, handleChange}) => (
+			<input
+				placeholder={placeholder}
+				type={type}
+				step='0.0001'
+				value={value}
+				onChange={(e) => handleChange(e, name)}
+				className='my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism'
+			/>
+		)
+
+
+		const Welcome = () => {
+
+			const connectWallet = () => {
+
+			}
+
+			const handleSubmit = () => {
+
+			}
+
+			return (
+				<div className='flex w-full justify-center items-center'>
+					<div className='flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4'>
+						<div className='flex flex-1 justify-start flex-col mf:mr-10'>
+							<h1 className='text-3xl sm:text-5xl text-white text-gradient py-1'>
+								Send Crypto <br/> across the world
+							</h1>
+							<p className='text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base'>
+								Expore the crypto world. Buy and sell cryptocurrencies easily on Kcrypto.
+							</p>
+							<button
+								type='button'
+								onClick={connectWallet}
+								className='flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]'
+							>
+								<p className='text-white text-base font-semibold'>Connect Wallet</p>
+							</button>
+
+							<div className='grid sm:grid-cols-3 grid-cols-2 w-full mt-10'>
+								<div className={`rounded-tl-2xl ${commonStyles}`}>
+									Reliability
+								</div>
+								<div className={commonStyles}>
+									Security
+								</div>
+								<div className={`rounded-tr-2xl ${commonStyles}`}>
+									Ethereum
+								</div>
+								<div className={`rounded-bl-2xl ${commonStyles}`}>
+									Web 3.0
+								</div>
+								<div className={commonStyles}>
+									Low fees
+								</div>
+								<div className={`rounded-br-2xl ${commonStyles}`}>
+									Blockchain
+								</div>
+							</div>
+						</div>
+
+						<div className='flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10'>
+							<div className='p-3 justify-end items-start flex-col rounded-xl h-40 sm:w-72 w-full my-5 eth-card white-glassmorphism'>
+								<div className='flex justify-between flex-col w-full h-full'>
+									<div className='flex justify-between items-start'>
+										<div className='w-10 h-10 rounded-full border-2 border-white flex justify-center items-center'>
+											<SiEthereum fontSize={21} color="#fff" />
+										</div>
+										<BsInfoCircle fontSize={17} color='#fff' />
+									</div>
+									<div>
+										<p className='text-white font-light text-sm'>
+											Address
+										</p>
+										<p className='text-white font-semibold text-lg mt-1'>
+											Ethereum
+										</p>
+									</div>
+								</div>
+							</div>
+
+							<div className='p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism'>
+								<Input placeholder='Address To' name='addressTo' type='text' handleChange={() => {}} />
+								<Input placeholder='Amount (ETH)' name='amount' type='number' handleChange={() => {}} />
+								<Input placeholder='Keyword (Gif)' name='keyword' type='text' handleChange={() => {}} />
+								<Input placeholder='Enter Message' name='message' type='text' handleChange={() => {}} />
+
+								<div className='h-[1px] w-full bg-gray-400 my-2' />
+
+								{false ? (
+									<Loader />
+								) : (
+									<button
+										type='button'
+										onClick={handleSubmit}
+										className='text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer'
+									>
+										Send Now
+									</button>
+								)}
+							</div>
+						</div>
+					</div>
+				</div>
+			)
+		}
+
+		export default Welcome
 		
 	- Update 'client\tailwind.config.cjs'
-		...
+		/** @type {import('tailwindcss').Config} */
+		module.exports = {
+		  content: [
+			"./index.html",
+			"./src/**/*.{js,ts,jsx,tsx}",
+		  ],
+		  theme: {
+			fontFamily: {
+			  display: ["Open Sans", "sans-serif"],
+			  body: ["Open Sans", "sans-serif"],
+			},
+			extend: {
+			  screens: {
+				mf: "990px",
+			  },
+			  keyframes: {
+				"slide-in": {
+				  "0%": {
+					"-webkit-transform": "translateX(120%)",
+					transform: "translateX(120%)",
+				  },
+				  "100%": {
+					"-webkit-transform": "translateX(0%)",
+					transform: "translateX(0%)",
+				  },
+				},
+			  },
+			  animation: {
+				"slide-in": "slide-in 0.5s ease-out",
+			  },
+			},
+		  },
+		  variants: {
+			extend: {},
+		  },
+		  plugins: [],
+		}
+		
+	- Blockchain
+		>>> cd smart_contract
+		>>> npm install --save-dev hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers ethers
+			> Tại sao phải sử dụng HARDHAT
+				> Hardhat là công cụ Ethereum thế hệ tiếp theo
+				> Chạy Solidity cục bộ: Dễ dàng triển khai hợp đồng của bạn, chạy thử nghiệm và gỡ lỗi mã Solidity mà không cần xử lý môi trường trực tiếp. Mạng Hardhat là một mạng Ethereum cục bộ được thiết kế để phát triển.
+				> Gỡ lỗi-đầu tiên: Hardhat là lựa chọn tốt nhất để gỡ lỗi Solidity. Bạn nhận được dấu vết ngăn xếp Solidity, console.log và thông báo lỗi rõ ràng khi giao dịch không thành công.
+			> ref 'https://hardhat.org/'
+			
+		- File 'smart_contract\package.json' cài xong ở trên được cập nhật như này:
+			{
+			  "name": "smart_contract",
+			  "version": "1.0.0",
+			  "description": "",
+			  "main": "index.js",
+			  "scripts": {
+				"test": "echo \"Error: no test specified\" && exit 1"
+			  },
+			  "keywords": [],
+			  "author": "",
+			  "license": "ISC",
+			  "devDependencies": {
+				"@nomiclabs/hardhat-ethers": "^2.1.1",
+				"@nomiclabs/hardhat-waffle": "^2.0.3",
+				"chai": "^4.3.6",
+				"ethereum-waffle": "^3.4.4",
+				"ethers": "^5.7.1",
+				"hardhat": "^2.11.2"
+			  }
+			}
+
+		>>> npx hardhat
+			- What do you want to do?: Chọn 'Create a JavaScript project'
+			- Hardhat project root: Để mặc định rồi nhấn Enter
+			- Do you want to add a .gitignore? (Y/n): Chọn 'y'
+					> Project được tạp với các thư mục và các file
+					> Message thông báo 
+						You need to install these dependencies to run the sample project:  
+						npm install --save-dev "hardhat@^2.11.2" "@nomicfoundation/hardhat-toolboxt-toolbox@^2.0.0"
+						
+		>>> npm install --save-dev "hardhat@^2.11.2" "@nomicfoundation/hardhat-toolbox@^2.0.0"
+			> Check file 'smart_contract\package.json' để xem "@nomicfoundation/hardhat-toolbox": "^2.0.0", đã được thêm vào
+					
+		>>> npx hardhat test
+		
+		- Install 'solidity' trong VS Code 
+			> Ethereum Solidity Language for Visual Studio Code
+			> Solidity is the language used in Ethereum to create smart contracts
+			
+		- Tạo file 'smart_contract\contracts\Transactions.sol'
+			> Xử lý các giao dịch cho blockchain
+			- Code:
+				//SPDX-License-Identifier: UNLICENSED
+
+				pragma solidity ^0.8.0;
+
+				contract Transactions {
+					uint256 transactionCount;
+
+					event Transfer(address from, address receiver, uint amount, string message, uint256 timestamp, string keyword);
+
+					struct TransferStruct {
+						address sender;
+						address receiver;
+						uint amount;
+						string message;
+						uint256 timestamp;
+						string keyword;
+					}
+
+					TransferStruct[] transactions;
+
+					function addToBlockChain(address payable receiver, uint amount, string memory message, string memory keyword) public {
+						transactionCount += 1;
+						transactions.push(TransferStruct(msg.sender, receiver, amount, message, block.timestamp, keyword));
+
+						//Transfer(from, receiver, amount, message, timestamp, keyword)
+						emit Transfer(msg.sender, receiver, amount, message, block.timestamp, keyword);
+					}
+
+					function getAllBlockChains() public view returns (TransferStruct[] memory) {
+						return transactions;
+					}
+
+					function getBlockChainCount() public view returns (uint256) {
+						return transactionCount;
+					}
+				}
+				
+		- Update 'smart_contract\scripts\deploy.js'
+			> Deploy cái Transactions đã viết ở trên
+			- Cập nhật Code lại như sau:
+				const hre = require("hardhat");
+
+				const main = async () => {
+				  const Transactions = await hre.ethers.getContractFactory("Transactions");
+				  const transactions = await Transactions.deploy();
+
+				  await transactions.deployed();
+
+				  console.log("Transactions deployed to: ", transactions.address);
+				}
+
+				const runMain = async () => {
+				  try {
+					await main();
+					process.exit(0);
+				  } catch (error) {
+					console.error(error);
+					process.exit(1);
+				  }
+				}
+
+				runMain();
+				
+		- [TestNet] ETH miễn phí
+			> Ropsten là bản testnet phổ biến nhất của Ethereum và thường được sử dụng làm mạng thử nghiệm cho các nhà phát triển tạo dApp của riêng họ trên Ethereum blockchain.
+			> Search google từ khóa "ropsten faucet" để chọn 1 site
+				'https://faucet.rinkeby.io/'
+				
+				> Ref một vài site khác:
+					https://ropsten.chain.link/
+					https://faucet.dimensions.network/
+					https://faucet-sokol.herokuapp.com/
+					
+		- MetaMask
+			> MetaMask là một ví tiền điện tử phần mềm được sử dụng để tương tác với chuỗi khối Ethereum. Nó cho phép người dùng truy cập ví Ethereum của họ thông qua tiện ích mở rộng trình duyệt hoặc ứng dụng di động, sau đó có thể được sử dụng để tương tác với các ứng dụng phi tập trung.
+			
+			- Vào Chrome Store search extension 'metamask' và install:
+				'https://chrome.google.com/webstore/category/extensions'
+				
+			- Tải xong click biểu tượng metamask ở chrome rồi:
+				- Click 'Get started'
+				- Help us improve MetaMask: chọn 'I agree'
+				- Click 'Create a wallet'
+					- Đặt mật khẩu: 12345678
+					- Click 'Create'
