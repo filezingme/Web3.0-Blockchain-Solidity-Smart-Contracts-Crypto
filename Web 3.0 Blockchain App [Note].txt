@@ -574,13 +574,20 @@
 				
 		- [TestNet] ETH miễn phí
 			> Ropsten là bản testnet phổ biến nhất của Ethereum và thường được sử dụng làm mạng thử nghiệm cho các nhà phát triển tạo dApp của riêng họ trên Ethereum blockchain.
-			> Search google từ khóa "ropsten faucet" để chọn 1 site
-				'https://faucet.rinkeby.io/'
+			> Search google từ khóa "ropsten faucet" hoặc 'faucet metamask' để chọn 1 site:
+				'https://goerlifaucet.com/'
+					> Cần click singup free
 				
 				> Ref một vài site khác:
+					https://faucet.egorfine.com/ 
+						> 'cái này như video hướng dẫn nhưng đã bị tạm ngừng'
 					https://ropsten.chain.link/
 					https://faucet.dimensions.network/
 					https://faucet-sokol.herokuapp.com/
+					https://faucet.sepolia.dev/
+					https://goerlifaucet.com/
+					https://faucet.rinkeby.io/
+					https://sepolia-faucet.pk910.de/ > 'mạng test này không được hỗ trợ trong alchemy.com phía dưới'
 					
 		- MetaMask
 			> MetaMask là một ví tiền điện tử phần mềm được sử dụng để tương tác với chuỗi khối Ethereum. Nó cho phép người dùng truy cập ví Ethereum của họ thông qua tiện ích mở rộng trình duyệt hoặc ứng dụng di động, sau đó có thể được sử dụng để tương tác với các ứng dụng phi tập trung.
@@ -594,3 +601,74 @@
 				- Click 'Create a wallet'
 					- Đặt mật khẩu: 12345678
 					- Click 'Create'
+					- Click 'Next'
+					- Click 'CLICK HERE TO REVEAL SECRET WORDS':
+						'weapon paper chase loyal subway siren float yard lunch alpha network mirror'
+					- Click 'Next'
+					- Confirm your Secret Recovery Phrase: nhập lại cụm từ bên trên theo đúng thứ tự
+					- Click 'Confirm'
+					- Click 'All done'
+					
+				- Click 'Ethereum Mainnet' ở trên cùng bên phải màn hình MetaMask
+					- Click 'Show/hide'
+						- Show test networks: bật 'ON'
+						
+				- Click lại 'Ethereum Mainnet' sẽ nhìn thấy một danh sách vài network mới
+					- Chọn 'Goerli test network'
+					- Copy địa chỉ Eth (Account 1) của Goerli test network: địa eth chỉ là '0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405'
+					- Truy cập trang 'https://goerlifaucet.com/'
+						- Nhập địa chỉ eth vừa copy vào và click click 'Send Me ETH'
+						- Hệ thống sẽ tự động gửi 0.1 Goerli ETH vào địa chỉ eth, nếu muốn nhiều hơn thì làm theo hướng dẫn của họ
+						- Site cung cấp link để xem lịch sử nhận eth vừa xong 
+							'https://goerli.etherscan.io/tx/0x98608e731a464862a71d321b665cc8b25d9f2aec95ad4aaba95743a7af998c38'
+							
+			- Truy cập 'https://www.alchemy.com/'
+				> Đây là nền tảng phát triển Web3. Bộ công cụ phát triển web3 mạnh mẽ nhất để xây dựng và mở rộng quy mô dApp của bạn một cách dễ dàng.
+				
+				- Tạo tài khoản mới: filezingme@gmail.com/bk...u (cần kích hoạt email)
+				- Ra trang chủ click nút 'Get started for free'
+					- Welcome! Let’s create your team: nhập 'Team 1'
+					- Awesome! What type of project would you like to build?: Chọn 'Learning'
+					- Lets choose your chain: Chọn 'Ethereum'
+					- Choose your plan: Chọn 'Free'
+					- Add payment info now to unlock powerful benefits: Click 'Skip for now'
+					- Last thing, how did you hear about us?: Trả lời 'from youtuber in a learning lession'
+					- Click 'Let''s Build!'
+					
+					- Click '+ CREATE APP'
+						- NAME: 'krypt'
+						- DESCRIPTION: Chọn 'Blockchain Smart Contract'
+						- CHAIN: Chọn 'Ethereum'
+						- NETWORK: Chọn 'Goerli'
+						
+					- Nhấn 'CREATE APP'
+					
+					- Mở 'VIEW DETAILS':
+						- Copy Key: 'https://eth-mainnet.g.alchemy.com/v2/g-Yes-x8NdMoaxC_qE5ymZIjSfz_01xr'
+						
+		- Update 'smart_contract\hardhat.config.js'
+			- Code trong file thay như này:
+				require('@nomiclabs/hardhat-waffle')
+
+				module.exports = {
+				  solidity: "0.8.17",
+				  networks: {
+					goerli: {
+					  url: 'https://eth-mainnet.g.alchemy.com/v2/g-Yes-x8NdMoaxC_qE5ymZIjSfz_01xr',
+					  accounts: ['58ecd49400427f57ecfeac42a032dcdc99c10d9fd27c47902ed7d3bb33dc1df6']
+					}
+				  }
+				};		
+		
+			> Lưu ý trong đó:	
+				url = key mới copy ở bước trên 'https://eth-mainnet.g.alchemy.com/v2/g-Yes-x8NdMoaxC_qE5ymZIjSfz_01xr'
+				accounts = 
+					> Click MetaMask icon trên chrome 
+					> click menu 3 chấm 
+					> Account details 
+					> Export private key 
+					> Nhập mật khẩu '12345678' đã đặt lúc đầu install metamask
+					> Copy Private Key '58ecd49400427f57ecfeac42a032dcdc99c10d9fd27c47902ed7d3bb33dc1df6'
+		
+		>>> npx hardhat run scripts/deploy.js --network goerli
+			
