@@ -457,218 +457,466 @@
 		  plugins: [],
 		}
 		
-	- Blockchain
-		>>> cd smart_contract
-		>>> npm install --save-dev hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers ethers
-			> Tại sao phải sử dụng HARDHAT
-				> Hardhat là công cụ Ethereum thế hệ tiếp theo
-				> Chạy Solidity cục bộ: Dễ dàng triển khai hợp đồng của bạn, chạy thử nghiệm và gỡ lỗi mã Solidity mà không cần xử lý môi trường trực tiếp. Mạng Hardhat là một mạng Ethereum cục bộ được thiết kế để phát triển.
-				> Gỡ lỗi-đầu tiên: Hardhat là lựa chọn tốt nhất để gỡ lỗi Solidity. Bạn nhận được dấu vết ngăn xếp Solidity, console.log và thông báo lỗi rõ ràng khi giao dịch không thành công.
-			> ref 'https://hardhat.org/'
+--------------------------------------------------------------------------		
+* Blockchain
+	>>> cd smart_contract
+	>>> npm install --save-dev hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers ethers
+		> Tại sao phải sử dụng HARDHAT
+			> Hardhat là công cụ Ethereum thế hệ tiếp theo
+			> Chạy Solidity cục bộ: Dễ dàng triển khai hợp đồng của bạn, chạy thử nghiệm và gỡ lỗi mã Solidity mà không cần xử lý môi trường trực tiếp. Mạng Hardhat là một mạng Ethereum cục bộ được thiết kế để phát triển.
+			> Gỡ lỗi-đầu tiên: Hardhat là lựa chọn tốt nhất để gỡ lỗi Solidity. Bạn nhận được dấu vết ngăn xếp Solidity, console.log và thông báo lỗi rõ ràng khi giao dịch không thành công.
+		> ref 'https://hardhat.org/'
+		
+	- File 'smart_contract\package.json' cài xong ở trên được cập nhật như này:
+		{
+		  "name": "smart_contract",
+		  "version": "1.0.0",
+		  "description": "",
+		  "main": "index.js",
+		  "scripts": {
+			"test": "echo \"Error: no test specified\" && exit 1"
+		  },
+		  "keywords": [],
+		  "author": "",
+		  "license": "ISC",
+		  "devDependencies": {
+			"@nomiclabs/hardhat-ethers": "^2.1.1",
+			"@nomiclabs/hardhat-waffle": "^2.0.3",
+			"chai": "^4.3.6",
+			"ethereum-waffle": "^3.4.4",
+			"ethers": "^5.7.1",
+			"hardhat": "^2.11.2"
+		  }
+		}
+
+	>>> npx hardhat
+		- What do you want to do?: Chọn 'Create a JavaScript project'
+		- Hardhat project root: Để mặc định rồi nhấn Enter
+		- Do you want to add a .gitignore? (Y/n): Chọn 'y'
+				> Project được tạp với các thư mục và các file
+				> Message thông báo 
+					You need to install these dependencies to run the sample project:  
+					npm install --save-dev "hardhat@^2.11.2" "@nomicfoundation/hardhat-toolboxt-toolbox@^2.0.0"
+					
+	>>> npm install --save-dev "hardhat@^2.11.2" "@nomicfoundation/hardhat-toolbox@^2.0.0"
+		> Check file 'smart_contract\package.json' để xem "@nomicfoundation/hardhat-toolbox": "^2.0.0", đã được thêm vào
+				
+	>>> npx hardhat test
+	
+	- Install 'solidity' trong VS Code 
+		> Ethereum Solidity Language for Visual Studio Code
+		> Solidity is the language used in Ethereum to create smart contracts
+		
+	- Tạo file 'smart_contract\contracts\Transactions.sol'
+		> Xử lý các giao dịch cho blockchain
+		- Code:
+			//SPDX-License-Identifier: UNLICENSED
+
+			pragma solidity ^0.8.0;
+
+			contract Transactions {
+				uint256 transactionCount;
+
+				event Transfer(address from, address receiver, uint amount, string message, uint256 timestamp, string keyword);
+
+				struct TransferStruct {
+					address sender;
+					address receiver;
+					uint amount;
+					string message;
+					uint256 timestamp;
+					string keyword;
+				}
+
+				TransferStruct[] transactions;
+
+				function addToBlockChain(address payable receiver, uint amount, string memory message, string memory keyword) public {
+					transactionCount += 1;
+					transactions.push(TransferStruct(msg.sender, receiver, amount, message, block.timestamp, keyword));
+
+					//Transfer(from, receiver, amount, message, timestamp, keyword)
+					emit Transfer(msg.sender, receiver, amount, message, block.timestamp, keyword);
+				}
+
+				function getAllBlockChains() public view returns (TransferStruct[] memory) {
+					return transactions;
+				}
+
+				function getBlockChainCount() public view returns (uint256) {
+					return transactionCount;
+				}
+			}
 			
-		- File 'smart_contract\package.json' cài xong ở trên được cập nhật như này:
-			{
-			  "name": "smart_contract",
-			  "version": "1.0.0",
-			  "description": "",
-			  "main": "index.js",
-			  "scripts": {
-				"test": "echo \"Error: no test specified\" && exit 1"
-			  },
-			  "keywords": [],
-			  "author": "",
-			  "license": "ISC",
-			  "devDependencies": {
-				"@nomiclabs/hardhat-ethers": "^2.1.1",
-				"@nomiclabs/hardhat-waffle": "^2.0.3",
-				"chai": "^4.3.6",
-				"ethereum-waffle": "^3.4.4",
-				"ethers": "^5.7.1",
-				"hardhat": "^2.11.2"
+	- Update 'smart_contract\scripts\deploy.js'
+		> Deploy cái Transactions đã viết ở trên
+		- Cập nhật Code lại như sau:
+			const hre = require("hardhat");
+
+			const main = async () => {
+			  const Transactions = await hre.ethers.getContractFactory("Transactions");
+			  const transactions = await Transactions.deploy();
+
+			  await transactions.deployed();
+
+			  console.log("Transactions deployed to: ", transactions.address);
+			}
+
+			const runMain = async () => {
+			  try {
+				await main();
+				process.exit(0);
+			  } catch (error) {
+				console.error(error);
+				process.exit(1);
 			  }
 			}
 
-		>>> npx hardhat
-			- What do you want to do?: Chọn 'Create a JavaScript project'
-			- Hardhat project root: Để mặc định rồi nhấn Enter
-			- Do you want to add a .gitignore? (Y/n): Chọn 'y'
-					> Project được tạp với các thư mục và các file
-					> Message thông báo 
-						You need to install these dependencies to run the sample project:  
-						npm install --save-dev "hardhat@^2.11.2" "@nomicfoundation/hardhat-toolboxt-toolbox@^2.0.0"
-						
-		>>> npm install --save-dev "hardhat@^2.11.2" "@nomicfoundation/hardhat-toolbox@^2.0.0"
-			> Check file 'smart_contract\package.json' để xem "@nomicfoundation/hardhat-toolbox": "^2.0.0", đã được thêm vào
-					
-		>>> npx hardhat test
-		
-		- Install 'solidity' trong VS Code 
-			> Ethereum Solidity Language for Visual Studio Code
-			> Solidity is the language used in Ethereum to create smart contracts
+			runMain();
 			
-		- Tạo file 'smart_contract\contracts\Transactions.sol'
-			> Xử lý các giao dịch cho blockchain
-			- Code:
-				//SPDX-License-Identifier: UNLICENSED
+	- [TestNet] ETH miễn phí
+		> Ropsten là bản testnet phổ biến nhất của Ethereum và thường được sử dụng làm mạng thử nghiệm cho các nhà phát triển tạo dApp của riêng họ trên Ethereum blockchain.
+		> Search google từ khóa "ropsten faucet" hoặc 'faucet metamask' để chọn 1 site:
+			'https://goerlifaucet.com/'
+				> Cần click singup free
+			
+			> Ref một vài site khác:
+				https://faucet.egorfine.com/ 
+					> 'cái này như video hướng dẫn nhưng đã bị tạm ngừng'
+				https://ropsten.chain.link/
+				https://faucet.dimensions.network/
+				https://faucet-sokol.herokuapp.com/
+				https://faucet.sepolia.dev/
+				https://goerlifaucet.com/
+				https://faucet.rinkeby.io/
+				https://sepolia-faucet.pk910.de/ > 'mạng test này không được hỗ trợ trong alchemy.com phía dưới'
+				
+	- MetaMask
+		> MetaMask là một ví tiền điện tử phần mềm được sử dụng để tương tác với chuỗi khối Ethereum. Nó cho phép người dùng truy cập ví Ethereum của họ thông qua tiện ích mở rộng trình duyệt hoặc ứng dụng di động, sau đó có thể được sử dụng để tương tác với các ứng dụng phi tập trung.
+		
+		- Vào Chrome Store search extension 'metamask' và install:
+			'https://chrome.google.com/webstore/category/extensions'
+			
+		- Tải xong click biểu tượng metamask ở chrome rồi:
+			- Click 'Get started'
+			- Help us improve MetaMask: chọn 'I agree'
+			- Click 'Create a wallet'
+				- Đặt mật khẩu: 12345678
+				- Click 'Create'
+				- Click 'Next'
+				- Click 'CLICK HERE TO REVEAL SECRET WORDS':
+					'weapon paper chase loyal subway siren float yard lunch alpha network mirror'
+				- Click 'Next'
+				- Confirm your Secret Recovery Phrase: nhập lại cụm từ bên trên theo đúng thứ tự
+				- Click 'Confirm'
+				- Click 'All done'
+				
+			- Click 'Ethereum Mainnet' ở trên cùng bên phải màn hình MetaMask
+				- Click 'Show/hide'
+					- Show test networks: bật 'ON'
+					
+			- Click lại 'Ethereum Mainnet' sẽ nhìn thấy một danh sách vài network mới
+				- Chọn 'Goerli test network'
+				- Copy địa chỉ Eth (Account 1) của Goerli test network: địa eth chỉ là '0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405'
+				- Truy cập trang 'https://goerlifaucet.com/'
+					- Nhập địa chỉ eth vừa copy vào và click click 'Send Me ETH'
+					- Hệ thống sẽ tự động gửi 0.1 Goerli ETH vào địa chỉ eth, nếu muốn nhiều hơn thì làm theo hướng dẫn của họ
+					- Site cung cấp link để xem lịch sử nhận eth vừa xong 
+						'https://goerli.etherscan.io/tx/0x98608e731a464862a71d321b665cc8b25d9f2aec95ad4aaba95743a7af998c38'
+						
+		- Truy cập 'https://www.alchemy.com/'
+			> Đây là nền tảng phát triển Web3. Bộ công cụ phát triển web3 mạnh mẽ nhất để xây dựng và mở rộng quy mô dApp của bạn một cách dễ dàng.
+			
+			- Tạo tài khoản mới: filezingme@gmail.com/bk...u (cần kích hoạt email)
+			- Ra trang chủ click nút 'Get started for free'
+				- Welcome! Let’s create your team: nhập 'Team 1'
+				- Awesome! What type of project would you like to build?: Chọn 'Learning'
+				- Lets choose your chain: Chọn 'Ethereum'
+				- Choose your plan: Chọn 'Free'
+				- Add payment info now to unlock powerful benefits: Click 'Skip for now'
+				- Last thing, how did you hear about us?: Trả lời 'from youtuber in a learning lession'
+				- Click 'Let''s Build!'
+				
+				- Click '+ CREATE APP'
+					- NAME: 'krypt'
+					- DESCRIPTION: Chọn 'Blockchain Smart Contract'
+					- CHAIN: Chọn 'Ethereum'
+					- NETWORK: Chọn 'Goerli'
+					
+				- Nhấn 'CREATE APP'
+				
+				- Mở 'VIEW DETAILS':
+					- Copy Key: 'https://eth-goerli.g.alchemy.com/v2/rtTVQWc_rgwDm4mkaYi-k0_OtHWm4gsI'
+					
+	- Update 'smart_contract\hardhat.config.js'
+		- Code trong file thay như này:
+			require('@nomiclabs/hardhat-waffle')
 
-				pragma solidity ^0.8.0;
+			module.exports = {
+			  solidity: "0.8.17",
+			  networks: {
+				goerli: {
+				  url: 'https://eth-goerli.g.alchemy.com/v2/rtTVQWc_rgwDm4mkaYi-k0_OtHWm4gsI',
+				  accounts: ['58ecd49400427f57ecfeac42a032dcdc99c10d9fd27c47902ed7d3bb33dc1df6']
+				}
+			  }
+			};		
+	
+		> Lưu ý trong đó:	
+			url = key mới copy ở bước trên 'https://eth-goerli.g.alchemy.com/v2/rtTVQWc_rgwDm4mkaYi-k0_OtHWm4gsI'
+			accounts = 
+				> Click MetaMask icon trên chrome 
+				> click menu 3 chấm 
+				> Account details 
+				> Export private key 
+				> Nhập mật khẩu '12345678' đã đặt lúc đầu install metamask
+				> Copy Private Key '58ecd49400427f57ecfeac42a032dcdc99c10d9fd27c47902ed7d3bb33dc1df6'
+	
+	>>> npx hardhat run scripts/deploy.js --network goerli
+		> Thông báo thành công:
+			'Transactions deployed to:  0xAdF02BA4B99AD8124961Be59F96c26fD99578326'
+			
+	- Xem thông tin deploy của file 'Transactions.sol' tại đây 'smart_contract\artifacts\contracts\Transactions.sol\Transactions.json'
+		> Liệt kê các bằng json các thông tin trong file 'Transactions.sol' như hàm, biến, event nào, đầu vào input, đầu ra output và type là gì.
+			
+	- Tạo 'client\src\utils\Transactions.json'
+		- Nội dung file thì copy tất cả code từ 'smart_contract\artifacts\contracts\Transactions.sol\Transactions.json'
+			
+	- Tạo 'client\src\utils\constants.js'
+		- Code:
+			import abi from './Transactions.json'
 
-				contract Transactions {
-					uint256 transactionCount;
+			export const contractABI = abi.abi
+			export const contractAddress = '0xAdF02BA4B99AD8124961Be59F96c26fD99578326'
+			
+			> contractAddress: Là địa chỉ transaction đã deploy ở trên
+		
+	
+	- Tạo 'client\src\context\TransactionContext.jsx'
+		- Code:
+			import React, {useEffect, useState} from 'react'
+			import {ethers} from 'ethers'
+			import {contractABI, contractAddress} from '../utils/constants'
 
-					event Transfer(address from, address receiver, uint amount, string message, uint256 timestamp, string keyword);
+			export const TransactionContext = React.createContext();
 
-					struct TransferStruct {
-						address sender;
-						address receiver;
-						uint amount;
-						string message;
-						uint256 timestamp;
-						string keyword;
+			const {ethereum} = window
+
+
+			const getEthereumContract = () => {
+				const provider = new ethers.providers.Web3Provider(ethereum)
+				const signer = provider.getSigner()
+				const transactionContract = new ethers.Contract(contractAddress, contractABI, signer)
+
+				console.log({
+					provider,
+					signer,
+					transactionContract
+				})
+			}
+
+
+			export const TransactionProvider = ({children}) => {
+				return (
+					<TransactionContext.Provider value={{value: 'test'}}>
+						{children}
+					</TransactionContext.Provider>
+				)
+			}
+		
+	- Update 'client\src\main.jsx'
+		...
+		import {TransactionProvider} from './context/TransactionContext'
+
+		ReactDOM.createRoot(document.getElementById('root')).render(
+		  <TransactionProvider>
+			<React.StrictMode>
+			  <App />
+			</React.StrictMode>
+		  </TransactionProvider>
+		)
+		
+	- Update 'client\src\components\Welcome.jsx'
+		- Code:
+			import React, {useContext} from 'react'
+			...
+			import {TransactionContext} from '../context/TransactionContext'
+			...
+			const Welcome = () => {
+				const {value} = useContext(TransactionContext);
+				console.log(value)
+				
+		- Check trên trình duyệt console > hiện 'test' là ok rồi
+		
+	- Update 'client\src\context\TransactionContext.jsx'
+		- Code:
+			...
+			export const TransactionProvider = ({children}) => {
+
+				const [connectedAccount, setConnectedAccount] = useState()
+
+				const checkIfWalletIsConnected = async () => {
+					if (!ethereum) return alert('Please install metamask')
+
+					const accounts = await ethereum.request({method: 'eth_accounts'})
+
+					console.log(accounts)
+				}
+
+				const connectWallet = async () => {
+					try {
+						if (!ethereum) return alert('Please install metamask')
+				
+						const accounts = await ethereum.request({method: 'eth_requestAccounts'})
+				
+						setCurrentAccount(accounts[0])
+					} catch (error) {
+						console.log(error)
+						throw new Error('No ethereum object.')
 					}
+				}
 
-					TransferStruct[] transactions;
+				useEffect(() => {
+					checkIfWalletIsConnected();
+				}, [])
 
-					function addToBlockChain(address payable receiver, uint amount, string memory message, string memory keyword) public {
-						transactionCount += 1;
-						transactions.push(TransferStruct(msg.sender, receiver, amount, message, block.timestamp, keyword));
+				return (
+					<TransactionContext.Provider value={{connectWallet}}>
+						{children}
+					</TransactionContext.Provider>
+				)
+			}
+		
+	- Update 'client\src\components\Welcome.jsx'
+		- Code:
+			...
+			const {connectWallet} = useContext(TransactionContext);
+			...
+			
+			> Lưu ý: 
+				> Xóa hàm connectWallet trước đó đi để thay bằng hàm 'connectWallet' trong context
+				> Sau khi connect thành công nhấn refresh trình duyệt sẽ nhìn thấy console.log(accounts) in ra ở console bởi hàm 'checkIfWalletIsConnected' trong file 'client\src\context\TransactionContext.jsx'
+		
+	- Update 'client\src\context\TransactionContext.jsx'
+		- Code:
+			export const TransactionProvider = ({children}) => {
 
-						//Transfer(from, receiver, amount, message, timestamp, keyword)
-						emit Transfer(msg.sender, receiver, amount, message, block.timestamp, keyword);
-					}
+				const [currentAccount, setCurrentAccount] = useState('')
 
-					function getAllBlockChains() public view returns (TransferStruct[] memory) {
-						return transactions;
-					}
-
-					function getBlockChainCount() public view returns (uint256) {
-						return transactionCount;
+				const checkIfWalletIsConnected = async () => {
+					try {
+						if (!ethereum) return alert('Please install metamask')
+				
+						const accounts = await ethereum.request({method: 'eth_accounts'})
+				
+						if (accounts.length) {
+							setCurrentAccount(accounts[0])
+				
+							//getAllTransactions();
+						}
+						else {
+							console.log('No account found')
+						}
+					} catch (error) {
+						console.log(error)
+						throw new Error('No ethereum object.')
 					}
 				}
 				
-		- Update 'smart_contract\scripts\deploy.js'
-			> Deploy cái Transactions đã viết ở trên
-			- Cập nhật Code lại như sau:
-				const hre = require("hardhat");
-
-				const main = async () => {
-				  const Transactions = await hre.ethers.getContractFactory("Transactions");
-				  const transactions = await Transactions.deploy();
-
-				  await transactions.deployed();
-
-				  console.log("Transactions deployed to: ", transactions.address);
-				}
-
-				const runMain = async () => {
-				  try {
-					await main();
-					process.exit(0);
-				  } catch (error) {
-					console.error(error);
-					process.exit(1);
-				  }
-				}
-
-				runMain();
+				...
 				
-		- [TestNet] ETH miễn phí
-			> Ropsten là bản testnet phổ biến nhất của Ethereum và thường được sử dụng làm mạng thử nghiệm cho các nhà phát triển tạo dApp của riêng họ trên Ethereum blockchain.
-			> Search google từ khóa "ropsten faucet" hoặc 'faucet metamask' để chọn 1 site:
-				'https://goerlifaucet.com/'
-					> Cần click singup free
-				
-				> Ref một vài site khác:
-					https://faucet.egorfine.com/ 
-						> 'cái này như video hướng dẫn nhưng đã bị tạm ngừng'
-					https://ropsten.chain.link/
-					https://faucet.dimensions.network/
-					https://faucet-sokol.herokuapp.com/
-					https://faucet.sepolia.dev/
-					https://goerlifaucet.com/
-					https://faucet.rinkeby.io/
-					https://sepolia-faucet.pk910.de/ > 'mạng test này không được hỗ trợ trong alchemy.com phía dưới'
-					
-		- MetaMask
-			> MetaMask là một ví tiền điện tử phần mềm được sử dụng để tương tác với chuỗi khối Ethereum. Nó cho phép người dùng truy cập ví Ethereum của họ thông qua tiện ích mở rộng trình duyệt hoặc ứng dụng di động, sau đó có thể được sử dụng để tương tác với các ứng dụng phi tập trung.
-			
-			- Vào Chrome Store search extension 'metamask' và install:
-				'https://chrome.google.com/webstore/category/extensions'
-				
-			- Tải xong click biểu tượng metamask ở chrome rồi:
-				- Click 'Get started'
-				- Help us improve MetaMask: chọn 'I agree'
-				- Click 'Create a wallet'
-					- Đặt mật khẩu: 12345678
-					- Click 'Create'
-					- Click 'Next'
-					- Click 'CLICK HERE TO REVEAL SECRET WORDS':
-						'weapon paper chase loyal subway siren float yard lunch alpha network mirror'
-					- Click 'Next'
-					- Confirm your Secret Recovery Phrase: nhập lại cụm từ bên trên theo đúng thứ tự
-					- Click 'Confirm'
-					- Click 'All done'
-					
-				- Click 'Ethereum Mainnet' ở trên cùng bên phải màn hình MetaMask
-					- Click 'Show/hide'
-						- Show test networks: bật 'ON'
-						
-				- Click lại 'Ethereum Mainnet' sẽ nhìn thấy một danh sách vài network mới
-					- Chọn 'Goerli test network'
-					- Copy địa chỉ Eth (Account 1) của Goerli test network: địa eth chỉ là '0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405'
-					- Truy cập trang 'https://goerlifaucet.com/'
-						- Nhập địa chỉ eth vừa copy vào và click click 'Send Me ETH'
-						- Hệ thống sẽ tự động gửi 0.1 Goerli ETH vào địa chỉ eth, nếu muốn nhiều hơn thì làm theo hướng dẫn của họ
-						- Site cung cấp link để xem lịch sử nhận eth vừa xong 
-							'https://goerli.etherscan.io/tx/0x98608e731a464862a71d321b665cc8b25d9f2aec95ad4aaba95743a7af998c38'
-							
-			- Truy cập 'https://www.alchemy.com/'
-				> Đây là nền tảng phát triển Web3. Bộ công cụ phát triển web3 mạnh mẽ nhất để xây dựng và mở rộng quy mô dApp của bạn một cách dễ dàng.
-				
-				- Tạo tài khoản mới: filezingme@gmail.com/bk...u (cần kích hoạt email)
-				- Ra trang chủ click nút 'Get started for free'
-					- Welcome! Let’s create your team: nhập 'Team 1'
-					- Awesome! What type of project would you like to build?: Chọn 'Learning'
-					- Lets choose your chain: Chọn 'Ethereum'
-					- Choose your plan: Chọn 'Free'
-					- Add payment info now to unlock powerful benefits: Click 'Skip for now'
-					- Last thing, how did you hear about us?: Trả lời 'from youtuber in a learning lession'
-					- Click 'Let''s Build!'
-					
-					- Click '+ CREATE APP'
-						- NAME: 'krypt'
-						- DESCRIPTION: Chọn 'Blockchain Smart Contract'
-						- CHAIN: Chọn 'Ethereum'
-						- NETWORK: Chọn 'Goerli'
-						
-					- Nhấn 'CREATE APP'
-					
-					- Mở 'VIEW DETAILS':
-						- Copy Key: 'https://eth-mainnet.g.alchemy.com/v2/g-Yes-x8NdMoaxC_qE5ymZIjSfz_01xr'
-						
-		- Update 'smart_contract\hardhat.config.js'
-			- Code trong file thay như này:
-				require('@nomiclabs/hardhat-waffle')
-
-				module.exports = {
-				  solidity: "0.8.17",
-				  networks: {
-					goerli: {
-					  url: 'https://eth-mainnet.g.alchemy.com/v2/g-Yes-x8NdMoaxC_qE5ymZIjSfz_01xr',
-					  accounts: ['58ecd49400427f57ecfeac42a032dcdc99c10d9fd27c47902ed7d3bb33dc1df6']
-					}
-				  }
-				};		
+				return (
+					<TransactionContext.Provider value={{connectWallet, currentAccount}}>
+					...
+				)
+			}
 		
-			> Lưu ý trong đó:	
-				url = key mới copy ở bước trên 'https://eth-mainnet.g.alchemy.com/v2/g-Yes-x8NdMoaxC_qE5ymZIjSfz_01xr'
-				accounts = 
-					> Click MetaMask icon trên chrome 
-					> click menu 3 chấm 
-					> Account details 
-					> Export private key 
-					> Nhập mật khẩu '12345678' đã đặt lúc đầu install metamask
-					> Copy Private Key '58ecd49400427f57ecfeac42a032dcdc99c10d9fd27c47902ed7d3bb33dc1df6'
+	- Update 'client\src\components\Welcome.jsx'
+		- Code:
+			...
+			const {connectWallet, currentAccount} = useContext(TransactionContext);
+			...
+			{!currentAccount && (
+				<button
+					type='button'
+					onClick={connectWallet}
+					className='flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]'
+				>
+					<p className='text-white text-base font-semibold'>Connect Wallet</p>
+				</button>
+			)}
+			...
 		
-		>>> npx hardhat run scripts/deploy.js --network goerli
+	- Update 'client\src\context\TransactionContext.jsx'
+		- Code:
+			...
+			const [formData, setFormData] = useState({addressTo: '', amount: '', keyword: '', message: ''})
 			
+			const handleChange = (e, name) => {
+				setFormData((prevState) => ({...prevState, [name]: e.target.value}))
+			}
+			...
+			<TransactionContext.Provider value={{connectWallet, currentAccount, formData, setFormData, handleChange, sendTransaction}}>
+			...
+		
+	- Update 'client\src\components\Welcome.jsx'
+		- Code:
+			const {..., formData, setFormData, handleChange, sendTransaction} = useContext(TransactionContext);
+			...
+			const handleSubmit = (e) => {
+				const {addressTo, amount, keyword, message} = formData
+
+				e.preventDefault()
+
+				if (!addressTo || !amount || !keyword || !message) 
+					return
+
+				sendTransaction()
+			}
+			...
+			<Input placeholder='Address To' name='addressTo' type='text' handleChange={handleChange} />
+			<Input placeholder='Amount (ETH)' name='amount' type='number' handleChange={handleChange} />
+			<Input placeholder='Keyword (Gif)' name='keyword' type='text' handleChange={handleChange} />
+			<Input placeholder='Enter Message' name='message' type='text' handleChange={handleChange} />
+		
+	- Update 'client\src\context\TransactionContext.jsx'
+		- Code:
+			...
+			const getEthereumContract = () => {
+				...
+				return transactionContract
+			}
+			...
+			const sendTransaction = async () => {
+				try {
+					...
+
+					//get the data from the form...    
+					const {addressTo, amount, keyword, message} = formData
+            
+					const transactionContract = getEthereumContract()
+
+					await ethereum.request({
+						method: 'eth_sendTransaction',
+						param: [{
+							from: currentAccount,
+							to: addressTo,
+							gas: '0x5208'
+						}]
+					})
+
+				} catch (error) {
+					...
+				}
+			}
+			...
+			
+		> Lưu ý:
+			> Gas: 
+				> Search google từ khóa 'hex to decimal', chọn kết quả đầu https://www.rapidtables.com/convert/number/hex-to-decimal.html
+					> Enter hex number: Nhập '0x5208'
+						> Chọn From 'Hexadecimal' và To 'Decimal'
+						> Nhấn 'Convert' được kết quả 'Decimal number' là '21000'
+				
+				> Truy cập 'https://eth-converter.com/'
+					> Nhập Gwei: '21000' sẽ nhận được con số chuyển đổi sang 'Eth' là '0.000021'
+						> Điều này có nghĩa là phí gas send giao dịch qua mạng eth là 0.000021 eth
