@@ -20,6 +20,8 @@ export const TransactionProvider = ({children}) => {
 
     const [currentAccount, setCurrentAccount] = useState('')
     const [formData, setFormData] = useState({addressTo: '', amount: '', keyword: '', message: ''})
+    const [isLoading, setIsLoading] = useState(false)
+    const [transactionCount, setTransactionCount] = useState(localStorage.getItem('transactionCount'))
 
     
     const handleChange = (e, name) => {
@@ -68,18 +70,33 @@ export const TransactionProvider = ({children}) => {
                 return alert('Please install metamask')
 
             //get the data from the form...
-            const {addressTo, amount, keyword, message} = formData
-            
+            const {addressTo, amount, keyword, message} = formData            
             const transactionContract = getEthereumContract()
+            const parsedAmount = ethers.utils.parseEther(amount) //string to number
 
             await ethereum.request({
                 method: 'eth_sendTransaction',
-                param: [{
+                params: [{
                     from: currentAccount,
                     to: addressTo,
-                    gas: '0x5208' //search google 'hex to decimal', https://www.rapidtables.com/convert/number/hex-to-decimal.html
+                    gas: '0x5208', //21000 Gwei (~0.000021 Ether)
+                    value: parsedAmount._hex, //ex: 0.00001
                 }]
             })
+
+            const transactionHash = transactionContract.addToBlockchain(addressTo, parsedAmount, message, keyword)
+
+            setIsLoading(true)
+            console.log(`Loading - ${transactionHash.transactionHash}`)
+
+            await transactionHash.wait()
+
+            setIsLoading(false)
+            console.log(`Success - ${transactionHash.transactionHash}`)
+
+            const transactionCount = await transactionContract.getTransactionCount()
+
+            setTransactionCount(transactionCount.toNumber())
 
         } catch (error) {
             console.log(error)

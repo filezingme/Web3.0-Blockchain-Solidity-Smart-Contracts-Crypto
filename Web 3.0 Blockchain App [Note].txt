@@ -881,32 +881,50 @@
 	- Update 'client\src\context\TransactionContext.jsx'
 		- Code:
 			...
-			const getEthereumContract = () => {
+			export const TransactionProvider = ({children}) => {
 				...
-				return transactionContract
-			}
-			...
-			const sendTransaction = async () => {
-				try {
-					...
+				const [isLoading, setIsLoading] = useState(false)
+				const [transactionCount, setTransactionCount] = useState(localStorage.getItem('transactionCount'))
+				...
+				const sendTransaction = async () => {
+					try {
+						if (!ethereum) 
+							return alert('Please install metamask')
 
-					//get the data from the form...    
-					const {addressTo, amount, keyword, message} = formData
-            
-					const transactionContract = getEthereumContract()
+						//get the data from the form...
+						const {addressTo, amount, keyword, message} = formData            
+						const transactionContract = getEthereumContract()
+						const parsedAmount = ethers.utils.parseEther(amount) //string to number
 
-					await ethereum.request({
-						method: 'eth_sendTransaction',
-						param: [{
-							from: currentAccount,
-							to: addressTo,
-							gas: '0x5208'
-						}]
-					})
+						await ethereum.request({
+							method: 'eth_sendTransaction',
+							params: [{
+								from: currentAccount,
+								to: addressTo,
+								gas: '0x5208', //21000 Gwei
+								value: parsedAmount._hex, //0.00001
+							}]
+						})
 
-				} catch (error) {
-					...
+						const transactionHash = transactionContract.addToBlockchain(addressTo, parsedAmount, message, keyword)
+
+						setIsLoading(true)
+						console.log(`Loading - ${transactionHash.transactionHash}`)
+
+						await transactionHash.wait()
+
+						setIsLoading(false)
+						console.log(`Success - ${transactionHash.transactionHash}`)
+
+						const transactionCount = await transactionContract.getTransactionCount()
+
+						setTransactionCount(transactionCount.toNumber())
+
+					} catch (error) {
+						...
+					}
 				}
+				...
 			}
 			...
 			
@@ -920,3 +938,21 @@
 				> Truy cập 'https://eth-converter.com/'
 					> Nhập Gwei: '21000' sẽ nhận được con số chuyển đổi sang 'Eth' là '0.000021'
 						> Điều này có nghĩa là phí gas send giao dịch qua mạng eth là 0.000021 eth
+						
+	- MetaMask icon trên Chrome
+		- Create account
+			- Account Name: 'Account 2'
+			- Tạo xong có địa chỉ: '0xB2408A99aB4Fda5A87a44c3bcC4ce0013403520D'
+		
+		- Chạy client 'http://127.0.0.1:5173/'
+			- Address To: Nhập '0xB2408A99aB4Fda5A87a44c3bcC4ce0013403520D'
+			- Amount (Eth): '0.0005'
+			- Keyword: 'test k'
+			- Enter Message: 'test m'
+			- Click 'Send Now'
+				- MetaMask popup sẽ hiển thị lên thông tin transfer thì click 'Confirm'
+				- Chuyển MetaMask sang tài khoản 'Account 2' sẽ nhận được '0.0005'
+	
+--------------------------------------------------------------------------
+* Services Section
+	
