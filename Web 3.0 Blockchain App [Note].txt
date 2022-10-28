@@ -14,6 +14,14 @@
 	
 - react-icons (Bootstrap Icons)
 	'https://react-icons.github.io/react-icons/icons?name=bs'
+	
+- tailwindcss
+	- Installation
+		'https://tailwindcss.com/docs/installation/using-postcss'
+	- Docs:
+		'https://tailwindcss.com/docs/installation/using-postcss'
+	- Demo/exaple:
+		'https://tailwindui.com/components/preview'
 
 - Mua host+domain ở: 
 	'hostinger.com'
@@ -1020,4 +1028,55 @@
 			)
 
 			export default Services
+	
+--------------------------------------------------------------------------
+* Transactions Section			
+
+	- Show address hiển thị trên Welcome section		
+		- Tạo file 'client\src\utils\shortenAddress.js'
+			export const shortenAddress = (address) = `${address.slide(0,5)}...${address.slide(address.length-4)}`
+			
+			> hàm cắt chuỗi địa chỉ cho ngắn lại để không bị vỡ
+				
+		- Update 'client\src\components\Welcome.jsx'
+			import {shortenAddress} from '../utils/shortenAddress'
+			...
 		
+			<p className='text-white font-light text-sm'>
+				{shortenAddress(currentAccount)}
+			</p>
+			<p className='text-white font-semibold text-lg mt-1'>
+				Ethereum
+			</p>
+		
+	- Tạo file dữ liệu giả 'client\src\utils\dummyData.js'
+		export default [
+		  {
+			id: 1,
+			url: "https://metro.co.uk/wp-content/uploads/2015/05/pokemon_crying.gif?quality=90&strip=all&zoom=1&resize=500%2C284",
+			message: "",
+			timestamp: "12/21/2021, 4:33:21 PM",
+			addressFrom: "0xCF8e569A97C423952DdFf902375C7C76549A6A90",
+			amount: "0.01",
+			addressTo: "0x8aa395Ab97837576aF9cd6946C79024ef1acfdbE",
+		  },
+		  ...
+		];
+		
+	- Update 'client\src\components\Transactions.jsx'
+		- Code:
+			..
+			
+		> Lưu ý:
+			> 'noopener': Thuộc tính rel=”noopener” là một thuộc tính của thẻ a trong HTML, đây là thuộc tính được thêm vào để tăng cường bảo mật, ngăn chặn một cuộc tấn công lừa đảo thông qua window.opener. Nghĩa là nó ngăn chặn thay đổi trang đích thông qua việc chèn JavaScript để mở từ trang đích này sang một trang đích khác.
+				> Ví dụ: <a href="https://www.example.com" rel="noopener">Link to Example.com</a>
+				> Vậy nên, thuộc tính này khuyến nghị là luôn sử dụng.
+			
+			> 'noreferrer': Thuộc tính rel=”noreferrer" là một thuộc tính đặc biệt của thẻ a trong HTML, nó nhằm ngăn thông tin của liên kết đến trang đích bằng cách xóa mọi thông tin giới thiệu khỏi HTTP. Điều đó có nghĩa là Google sẽ hiểu là traffic tư liên kết này là Direct Traffic thay cho Referral.
+				> húng ta sử dụng thuộc tính rel = ”noreferrer” trên các liên kết đi khi bạn không muốn các trang web khác biết rằng bạn đang liên kết với chúng. Ngoài ra không thể nghĩ ra bất kỳ lý do chính đáng nào khiến bạn có thể muốn làm điều này.
+				> Chú ý:  không sử dụng thuộc tính rel = ”noreferrer” trên các liên kết nội bộ, nó có thể làm rối các báo cáo phân tích của Google của bạn.
+					> Với những website là WordPress thường sẽ được thêm tự động rel="noreferrer" khi bạn để link mở trong tab mới.
+						Ví dụ: <a href="https://www.example.com/" target="_blank" rel="noopener noreferrer">my external link</a>
+						Do đó, với liên kết này sẽ không được xuất hiện trong Google Analytics.
+						
+			> Ref: 'https://nguyenphudung.com/thuoc-tinh-relnoreferrer-noopener-la-gi-y-nghia-nhu-nao-trong-seo'
