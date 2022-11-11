@@ -6,8 +6,8 @@ export default [
       message: "",
       timestamp: "12/21/2021, 4:33:21 PM",
       addressFrom: "0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405",
-      amount: "0.01",
-      addressTo: "0x8aa395Ab97837576aF9cd6946C79024ef1acfdbE",
+      amount: "0.015",
+      addressTo: "0xb2408a99ab4fda5a87a44c3bcc4ce0013403520d",
     },
     {
       id: 2,
@@ -16,7 +16,7 @@ export default [
       timestamp: "12/21/2021, 4:33:21 PM",
       addressFrom: "0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405",
       amount: "0.01",
-      addressTo: "0x8aa395Ab97837576aF9cd6946C79024ef1acfdbE",
+      addressTo: "0xb2408a99ab4fda5a87a44c3bcc4ce0013403520d",
     },
     {
       id: 3,
@@ -25,7 +25,7 @@ export default [
       timestamp: "12/21/2021, 4:33:21 PM",
       addressFrom: "0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405",
       amount: "0.01",
-      addressTo: "0x8aa395Ab97837576aF9cd6946C79024ef1acfdbE",
+      addressTo: "0xb2408a99ab4fda5a87a44c3bcc4ce0013403520d",
     },
     {
       id: 4,
@@ -34,7 +34,7 @@ export default [
       timestamp: "12/21/2021, 4:33:21 PM",
       addressFrom: "0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405",
       amount: "0.01",
-      addressTo: "0x8aa395Ab97837576aF9cd6946C79024ef1acfdbE",
+      addressTo: "0xb2408a99ab4fda5a87a44c3bcc4ce0013403520d",
     },
     {
       id: 5,
@@ -43,7 +43,7 @@ export default [
       timestamp: "12/21/2021, 4:33:21 PM",
       addressFrom: "0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405",
       amount: "0.01",
-      addressTo: "0x8aa395Ab97837576aF9cd6946C79024ef1acfdbE",
+      addressTo: "0xb2408a99ab4fda5a87a44c3bcc4ce0013403520d",
     },
     {
       id: 6,
@@ -52,6 +52,6 @@ export default [
       timestamp: "12/21/2021, 4:33:21 PM",
       addressFrom: "0xF88E11c25090e7cda9F6B4af58B16E9b6eBA7405",
       amount: "0.01",
-      addressTo: "0x8aa395Ab97837576aF9cd6946C79024ef1acfdbE",
+      addressTo: "0xb2408a99ab4fda5a87a44c3bcc4ce0013403520d",
     },
   ];
