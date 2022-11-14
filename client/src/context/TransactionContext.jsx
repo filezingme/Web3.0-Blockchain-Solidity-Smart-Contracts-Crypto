@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {ethers} from 'ethers'
 import {contractABI, contractAddress} from '../utils/constants'
 
-export const TransactionContext = React.createContext();
+export const TransactionContext = React.createContext("");
 
 const {ethereum} = window
 
@@ -10,9 +10,9 @@ const {ethereum} = window
 const getEthereumContract = () => {
     const provider = new ethers.providers.Web3Provider(ethereum)
     const signer = provider.getSigner()
-    const transactionContract = new ethers.Contract(contractAddress, contractABI, signer)
+    const transactionsContract = new ethers.Contract(contractAddress, contractABI, signer)
 
-    return transactionContract
+    return transactionsContract
 }
 
 
@@ -32,11 +32,11 @@ export const TransactionProvider = ({children}) => {
     const getAllTransactions = async () => {
         try {
             if (!ethereum) return alert('Please install metamask')
-            const transactionContract = getEthereumContract()
+            const transactionsContract = getEthereumContract()
 
-            const availableTransactions = await transactionContract.getAllTransactions()
+            const availableTransactions = await transactionsContract.getAllTransactions()
 
-            console.log(availableTransactions)
+            console.log('availableTransactions:',availableTransactions)
         } catch (error) {
             console.log(error)
         }
@@ -64,12 +64,12 @@ export const TransactionProvider = ({children}) => {
     }
 
     
-    const checkIfTransactionsExist = async () => {
+    const checkIfTransactionsExists = async () => {
         try {
-            const transactionContract = getEthereumContract()
-            const transactionCount = await transactionContract.getTransactionCount()
+            const transactionsContract = getEthereumContract()
+            const currentTransactionCount = await transactionsContract.getTransactionCount()
             
-            localStorage.setItem('transactionCount', transactionCount)
+            localStorage.setItem('transactionCount', currentTransactionCount)
         } catch (error) {
             console.log(error)
             throw new Error('No ethereum object.')
@@ -98,7 +98,7 @@ export const TransactionProvider = ({children}) => {
 
             //get the data from the form...
             const {addressTo, amount, keyword, message} = formData            
-            const transactionContract = getEthereumContract()
+            const transactionsContract = getEthereumContract()
             const parsedAmount = ethers.utils.parseEther(amount) //string to number
 
             await ethereum.request({
@@ -111,19 +111,18 @@ export const TransactionProvider = ({children}) => {
                 }]
             })
 
-            const transactionHash = transactionContract.addToBlockchain(addressTo, parsedAmount, message, keyword)
+            const transactionHash = await transactionsContract.addToBlockChain(addressTo, parsedAmount, message, keyword)
 
             setIsLoading(true)
-            console.log(`Loading - ${transactionHash.transactionHash}`)
-
+            console.log(`Loading - ${transactionHash.hash}`)
             await transactionHash.wait()
-
+            console.log(`Success - ${transactionHash.hash}`)
             setIsLoading(false)
-            console.log(`Success - ${transactionHash.transactionHash}`)
 
-            const transactionCount = await transactionContract.getTransactionCount()
+            const transactionsCount = await transactionsContract.getTransactionCount()
 
-            setTransactionCount(transactionCount.toNumber())
+            setTransactionCount(transactionsCount.toNumber())
+            window.location.reload()
 
         } catch (error) {
             console.log(error)
@@ -134,7 +133,7 @@ export const TransactionProvider = ({children}) => {
 
     useEffect(() => {
         checkIfWalletIsConnected()
-        checkIfTransactionsExist()
+        checkIfTransactionsExists()
     }, [])
 
 

@@ -514,7 +514,7 @@
 				
 	>>> npx hardhat test
 	
-	- Install 'solidity' trong VS Code 
+	- Install 'solidity' trong VS Code (extension Id: 'JuanBlanco.solidity')
 		> Ethereum Solidity Language for Visual Studio Code
 		> Solidity is the language used in Ethereum to create smart contracts
 		
@@ -549,11 +549,11 @@
 					emit Transfer(msg.sender, receiver, amount, message, block.timestamp, keyword);
 				}
 
-				function getAllBlockChains() public view returns (TransferStruct[] memory) {
+				function getAllTransactions() public view returns (TransferStruct[] memory) {
 					return transactions;
 				}
 
-				function getBlockChainCount() public view returns (uint256) {
+				function getTransactionCount() public view returns (uint256) {
 					return transactionCount;
 				}
 			}
@@ -684,7 +684,7 @@
 	
 	>>> npx hardhat run scripts/deploy.js --network goerli
 		> Thông báo thành công:
-			'Transactions deployed to:  0xAdF02BA4B99AD8124961Be59F96c26fD99578326'
+			'Transactions deployed to:  0xadc71Ae657448536c41413271dE2e4d8a569fB8A'
 			
 	- Xem thông tin deploy của file 'Transactions.sol' tại đây 'smart_contract\artifacts\contracts\Transactions.sol\Transactions.json'
 		> Liệt kê các bằng json các thông tin trong file 'Transactions.sol' như hàm, biến, event nào, đầu vào input, đầu ra output và type là gì.
@@ -697,7 +697,7 @@
 			import abi from './Transactions.json'
 
 			export const contractABI = abi.abi
-			export const contractAddress = '0xAdF02BA4B99AD8124961Be59F96c26fD99578326'
+			export const contractAddress = '0xadc71Ae657448536c41413271dE2e4d8a569fB8A'
 			
 			> contractAddress: Là địa chỉ transaction đã deploy ở trên
 		
@@ -716,12 +716,12 @@
 			const getEthereumContract = () => {
 				const provider = new ethers.providers.Web3Provider(ethereum)
 				const signer = provider.getSigner()
-				const transactionContract = new ethers.Contract(contractAddress, contractABI, signer)
+				const transactionsContract = new ethers.Contract(contractAddress, contractABI, signer)
 
 				console.log({
 					provider,
 					signer,
-					transactionContract
+					transactionsContract
 				})
 			}
 
@@ -904,7 +904,7 @@
 
 						//get the data from the form...
 						const {addressTo, amount, keyword, message} = formData            
-						const transactionContract = getEthereumContract()
+						const transactionsContract = getEthereumContract()
 						const parsedAmount = ethers.utils.parseEther(amount) //string to number
 
 						await ethereum.request({
@@ -917,19 +917,17 @@
 							}]
 						})
 
-						const transactionHash = transactionContract.addToBlockchain(addressTo, parsedAmount, message, keyword)
+						const transactionHash = await transactionsContract.addToBlockChain(addressTo, parsedAmount, message, keyword)
 
 						setIsLoading(true)
-						console.log(`Loading - ${transactionHash.transactionHash}`)
-
+						console.log(`Loading - ${transactionHash.hash}`)
 						await transactionHash.wait()
-
+						console.log(`Success - ${transactionHash.hash}`)
 						setIsLoading(false)
-						console.log(`Success - ${transactionHash.transactionHash}`)
 
-						const transactionCount = await transactionContract.getTransactionCount()
+						const transactionsCount = await transactionsContract.getTransactionCount()
 
-						setTransactionCount(transactionCount.toNumber())
+						setTransactionCount(transactionsCount.toNumber())
 
 					} catch (error) {
 						...
@@ -1034,7 +1032,12 @@
 
 	- Show address hiển thị trên Welcome section		
 		- Tạo file 'client\src\utils\shortenAddress.js'
-			export const shortenAddress = (address) = `${address.slide(0,5)}...${address.slide(address.length-4)}`
+			export const shortenAddress = (address) => {
+				if (address)
+				   return `${address.slice(0, 5)}...${address.slice(address.length - 4)}`    
+				else 
+					return ''
+			}
 			
 			> hàm cắt chuỗi địa chỉ cho ngắn lại để không bị vỡ
 				
@@ -1263,9 +1266,9 @@
 			const getAllTransactions = async () => {
 				try {
 					if (!ethereum) return alert('Please install metamask')
-					const transactionContract = getEthereumContract()
+					const transactionsContract = getEthereumContract()
 
-					const availableTransactions = await transactionContract.getAllTransactions()
+					const availableTransactions = await transactionsContract.getAllTransactions()
 
 					console.log(availableTransactions)
 				} catch (error) {
@@ -1279,12 +1282,12 @@
 				...
 			}
 			...
-			const checkIfTransactionsExist = async () => {
+			const checkIfTransactionsExists = async () => {
 				try {
-					const transactionContract = getEthereumContract()
-					const transactionCount = await transactionContract.getTransactionCount()
+					const transactionsContract = getEthereumContract()
+					const currentTransactionCount = await transactionsContract.getTransactionCount()
 					
-					localStorage.setItem('transactionCount', transactionCount)
+					localStorage.setItem('transactionCount', currentTransactionCount)
 				} catch (error) {
 					console.log(error)
 					throw new Error('No ethereum object.')
@@ -1293,5 +1296,7 @@
 			...
 			useEffect(() => {
 				...
-				checkIfTransactionsExist()
+				checkIfTransactionsExists()
 			}, [])
+			
+			

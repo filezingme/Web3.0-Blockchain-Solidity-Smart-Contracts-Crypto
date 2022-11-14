@@ -26,11 +26,11 @@ contract Transactions {
         emit Transfer(msg.sender, receiver, amount, message, block.timestamp, keyword);
     }
 
-    function getAllBlockChains() public view returns (TransferStruct[] memory) {
+    function getAllTransactions() public view returns (TransferStruct[] memory) {
         return transactions;
     }
 
-    function getBlockChainCount() public view returns (uint256) {
+    function getTransactionCount() public view returns (uint256) {
         return transactionCount;
     }
 }
