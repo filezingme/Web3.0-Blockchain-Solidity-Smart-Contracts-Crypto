@@ -7,7 +7,8 @@ import useFetch from "../hooks/useFetch"
 
 const TransactionCard = ({addressTo, addressFrom, timestamp, message, keyword, amount, url}) => {
 
-    const gifUrl = useFetch({keyword})
+    const defaultGifUrl = 'https://metro.co.uk/wp-content/uploads/2015/05/pokemon_crying.gif?quality=90&strip=all&zoom=1&resize=500%2C284'
+    const gifUrl = useFetch({keyword, defaultGifUrl})
 
     return (
         <div className="bg-[#181918] m-4 flex flex-1
@@ -35,7 +36,7 @@ const TransactionCard = ({addressTo, addressFrom, timestamp, message, keyword, a
                     
                 </div>
                 <img 
-                    src={gifUrl || url}
+                    src={gifUrl || url || defaultGifUrl}
                     alt='gif'
                     className="w-full h-64 2x:h-96 rounded-md shadow-lg  object-cover"
                 />
@@ -50,7 +51,8 @@ const TransactionCard = ({addressTo, addressFrom, timestamp, message, keyword, a
 
 const Transactions = () => {
 
-    const {currentAccount} = useContext(TransactionContext)
+    const {currentAccount, transactions} = useContext(TransactionContext)
+    console.log('transactions: ', transactions)
 
     return (
         <div className="flex w-full justify-center 2xl:px-20 gradient-bg-transactions">
@@ -66,7 +68,7 @@ const Transactions = () => {
                 )}
 
                 <div className="flex flex-wrap justify-center items-center mt-10">
-                    {dummyData.reverse().map((transaction, i) => (
+                    {transactions.reverse().map((transaction, i) => (
                         <TransactionCard key={i} {...transaction} />
                     ))}
                 </div>

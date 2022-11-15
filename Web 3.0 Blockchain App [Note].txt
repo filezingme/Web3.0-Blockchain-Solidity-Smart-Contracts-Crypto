@@ -589,6 +589,10 @@
 		> Search google từ khóa "ropsten faucet" hoặc 'faucet metamask' để chọn 1 site:
 			'https://goerlifaucet.com/'
 				> Cần click singup free
+			'https://goerli-faucet.pk910.de/'
+				> Trang này cho đào Goerli ETH miễn phí, lúc nào đủ cảm thấy đủ số lượng Goerli ETH thì bấm 'Stop Mining...'
+			'https://gitter.im/goerli/testnet'
+				> Hoặc tham gia nhóm cộng đồng này để xin Goerli ETH (Chát Telegram,...)
 			
 			> Ref một vài site khác:
 				https://faucet.egorfine.com/ 
@@ -1178,7 +1182,7 @@
 
 			const API_KEY = import.meta.env.VITE_GIPHY_API
 
-			const useFetch = ({keyword}) => {
+			const useFetch = ({keyword, defaultGifUrl}) => {
 				const [gifUrl, setGifUrl] = useState('');
 
 				const fetchGifs = async () => {
@@ -1188,7 +1192,7 @@
 
 						setGifUrl(data[0]?.images.downsized_medium?.url)
 					} catch (error) {
-						setGifUrl('https://metro.co.uk/wp-content/uploads/2015/05/pokemon_crying.gif?quality=90&strip=all&zoom=1&resize=500%2C284')
+						setGifUrl(defaultGifUrl)
 					}
 				}
 
@@ -1214,10 +1218,11 @@
 			...
 			import useFetch from "../hooks/useFetch"
 			...
-			const gifUrl = useFetch({keyword})
+			const defaultGifUrl = 'https://metro.co.uk/wp-content/uploads/2015/05/pokemon_crying.gif?quality=90&strip=all&zoom=1&resize=500%2C284'
+			const gifUrl = useFetch({keyword, defaultGifUrl})
 			...
 			<img 
-				src={gifUrl || url}
+				src={gifUrl || url || defaultGifUrl}
 				alt='gif'
 				className="w-full h-64 2x:h-96 rounded-md shadow-lg  object-cover"
 			/>
@@ -1263,6 +1268,8 @@
 	- Update 'client\src\context\TransactionContext.jsx'
 		- Code:
 			...
+			const [transactions, setTransactions] = useState([])
+			...
 			const getAllTransactions = async () => {
 				try {
 					if (!ethereum) return alert('Please install metamask')
@@ -1270,7 +1277,18 @@
 
 					const availableTransactions = await transactionsContract.getAllTransactions()
 
-					console.log(availableTransactions)
+					const structuredTransactions = availableTransactions.map((transaction) => ({
+						addressTo: transaction.receiver,
+						addressFrom: transaction.sender,
+						timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
+						message: transaction.message,
+						keyword: transaction.keyword,
+						amount: parseInt(transaction.amount._hex) / (10 ** 18)
+					}))
+
+					console.log('structuredTransactions:',structuredTransactions)
+
+					setTransactions(structuredTransactions)
 				} catch (error) {
 					console.log(error)
 				}
@@ -1294,9 +1312,43 @@
 				}
 			}
 			...
+			const sendTransaction = async () => {
+				try {
+					...
+					window.location.reload()
+
+				}
+				...
+			}
+			...
 			useEffect(() => {
 				...
 				checkIfTransactionsExists()
 			}, [])
+			...
+			<TransactionContext.Provider value={{..., transactions, isLoading}}>
 			
+	- Update 'client\src\components\Transactions.jsx'		
+		- Code:
+			const Transactions = () => {
+				const {..., transactions} = useContext(TransactionContext)
+				return (
+					...
+						{transactions.reverse().map((transaction, i) => (
+							...
+						))}
+					...
+				)
+			}
 			
+	- Update 'client\src\components\Welcome.jsx'
+		- Code:
+			const {..., isLoading} = useContext(TransactionContext);
+			...
+			{isLoading ? (
+				<Loader />
+			...
+	
+--------------------------------------------------------------------------
+* Deployment
+	- 
