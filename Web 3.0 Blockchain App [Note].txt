@@ -1351,4 +1351,27 @@
 	
 --------------------------------------------------------------------------
 * Deployment
-	- 
+	- Trong thư mục '\client'
+			>>> npm run build
+				> lệnh này sẽ tạo ra thư mục 'client\dist' chứa bản deploy để push lên host chạy
+		
+		- Cài 'serve' để chạy bản build ở trên
+			>>> npm install -g serve
+			>>> serve build HOẶC >>> serve -s build
+				> Nó sẽ chạy bản build, cung cấp url sau:				
+				   ┌────────────────────────────────────────────────────┐
+				   │   Serving!                                         │
+				   │   - Local:            http://localhost:3000        │
+				   │   - On Your Network:  http://192.168.136.33:3000   │
+				   │   Copied local address to clipboard!               │
+				   └────────────────────────────────────────────────────┘
+				   
+	- Truy cập 'https://www.netlify.com/'
+		- Đăng nhập bằng tài khoản github: filezingme/fbiA
+			- Vào tab 'Sites' 
+				- 'Add new site' 
+				- 'Deploy manually' (có url: 'https://app.netlify.com/drop')
+				- Upload hoặc kéo cả thư mục 'dist' vào ô 'Drag and drop your site output folder here'
+					> Upload success sẽ tự động ra domain site dạng như này 'https://lovely-empanada-fe6f7b.netlify.app'
+				- Vào phần 'Domain settings' > 'Custom domains' > Click 'Options' > 'Edit site name' > nhập Site name: 'taitd2' > Save
+				- Truy cập 'https://taitd3.netlify.app/' sẽ thấy kết quả được deploy OK
