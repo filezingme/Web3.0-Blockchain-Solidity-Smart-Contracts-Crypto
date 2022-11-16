@@ -1374,4 +1374,7 @@
 				- Upload hoặc kéo cả thư mục 'dist' vào ô 'Drag and drop your site output folder here'
 					> Upload success sẽ tự động ra domain site dạng như này 'https://lovely-empanada-fe6f7b.netlify.app'
 				- Vào phần 'Domain settings' > 'Custom domains' > Click 'Options' > 'Edit site name' > nhập Site name: 'taitd2' > Save
-				- Truy cập 'https://taitd3.netlify.app/' sẽ thấy kết quả được deploy OK
+				- Truy cập 'https://taitd2.netlify.app/' sẽ thấy kết quả được deploy OK
+				
+				
+				
